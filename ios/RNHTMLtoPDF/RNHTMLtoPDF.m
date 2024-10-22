@@ -171,10 +171,20 @@ RCT_EXPORT_METHOD(convert:(NSDictionary *)options
         _paddingRight = [RCTConvert float:options[@"padding"]];
     }
 
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *path = [[NSBundle mainBundle] bundlePath];
-    NSURL *baseURL = [NSURL fileURLWithPath:path];
+    NSURL *baseURL = [NSURL fileURLWithPath:documentsDirectory];
+    NSURL *baseURL2 = [baseURL URLByAppendingPathComponent: @"htmlDirectory"];
+    NSURL *baseURL3 = [baseURL2 URLByAppendingPathComponent: @"html2pdf.html"];
+    NSString *originList = { @"*" };
+    NSLog(@"RNHTMLtoPDF html path %@", baseURL3);
+    // dispatch_async(dispatch_get_main_queue(), ^{
+    //     [_webView loadHTMLString:_html baseURL:baseURL];
+    // });
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_webView loadHTMLString:_html baseURL:baseURL];
+        [_webView loadFileURL:baseURL3 allowingReadAccessToURL:baseURL];
     });
 
     _resolveBlock = resolve;
